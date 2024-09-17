@@ -7,11 +7,11 @@ public class Employee {
     private final int id;
     private final String firstName;
     private final String lastName;
-    private final int salary;
+    private final double salary;
     private final Integer managerId;
     private final List<Employee> subordinates;
 
-    public Employee(int id, String firstName, String lastName, int salary, Integer managerId) {
+    public Employee(int id, String firstName, String lastName, double salary, Integer managerId) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -23,7 +23,7 @@ public class Employee {
     public int getId() { return id; }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
-    public int getSalary() { return salary; }
+    public double getSalary() { return salary; }
     public Integer getManagerId() { return managerId; }
     public List<Employee> getSubordinates() { return subordinates; }
 

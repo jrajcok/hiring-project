@@ -1,5 +1,5 @@
 package org.example.model;
 
-public record Deviation(int empId, DeviationEnum deviationEnum, int deviationValue) {
+public record Deviation(int empId, DeviationEnum deviationEnum, double deviationValue) {
 
 }

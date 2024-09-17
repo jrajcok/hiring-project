@@ -44,7 +44,7 @@ public class HrAppTest {
         // with org.hamcrest could be better (assert that contains Object)
         assertEquals(305, deviations.get(0).empId());
         assertEquals(DeviationEnum.SALARY_TOO_LOW, deviations.get(0).deviationEnum());
-        assertEquals(8000, deviations.get(0).deviationValue());
+        assertEquals(7999.5, deviations.get(0).deviationValue());
 
         assertEquals(306, deviations.get(1).empId());
         assertEquals(DeviationEnum.SALARY_TOO_HIGH, deviations.get(1).deviationEnum());

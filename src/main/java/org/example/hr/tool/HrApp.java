@@ -35,7 +35,8 @@ public class HrApp {
                 int id = Integer.parseInt(data[0]);
                 String firstName = data[1];
                 String lastName = data[2];
-                int salary = Integer.parseInt(data[3]);
+                // assuming . as decimal separator and no thousands spearators (otherwise replace), double should be enough
+                double salary = Double.parseDouble(data[3]);
                 Integer managerId = data.length > 4 && !data[4].isEmpty() ? Integer.parseInt(data[4]) : null;
 
                 Employee employee = new Employee(id, firstName, lastName, salary, managerId);
@@ -60,15 +61,15 @@ public class HrApp {
     private void checkManagerSalaries() {
         for (Employee emp : employees.values()) {
             if (!emp.getSubordinates().isEmpty()) {
-                int avgSubordinateSalary = emp.getSubordinates().stream().mapToInt(Employee::getSalary).sum() / emp.getSubordinates().size();
+                double avgSubordinateSalary = emp.getSubordinates().stream().mapToDouble(Employee::getSalary).sum() / emp.getSubordinates().size();
                 double lowerBound = avgSubordinateSalary * 1.2;
                 double upperBound = avgSubordinateSalary * 1.5;
 
                 if (emp.getSalary() < lowerBound) {
-                    deviations.add(new Deviation(emp.getId(), DeviationEnum.SALARY_TOO_LOW, (int) (lowerBound - emp.getSalary())));
+                    deviations.add(new Deviation(emp.getId(), DeviationEnum.SALARY_TOO_LOW, (double) (lowerBound - emp.getSalary())));
                     System.out.printf("Manager %s %s earns %.2f less than they should.\n", emp.getFirstName(), emp.getLastName(), lowerBound - emp.getSalary());
                 } else if (emp.getSalary() > upperBound) {
-                    deviations.add(new Deviation(emp.getId(), DeviationEnum.SALARY_TOO_HIGH, (int) (emp.getSalary() - upperBound)));
+                    deviations.add(new Deviation(emp.getId(), DeviationEnum.SALARY_TOO_HIGH, (double) (emp.getSalary() - upperBound)));
                     System.out.printf("Manager %s %s earns %.2f more than they should.\n", emp.getFirstName(), emp.getLastName(), emp.getSalary() - upperBound);
                 }
             }
