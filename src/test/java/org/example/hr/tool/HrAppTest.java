@@ -4,6 +4,9 @@ import org.example.model.DeviationEnum;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HrAppTest {
@@ -25,39 +28,39 @@ public class HrAppTest {
 
     @Test
     public void testBuildManagerSubordinateRelationships() {
-        assertEquals(2, hrApp.getEmployees().get(123).getSubordinates().size());
-        assertEquals(2, hrApp.getEmployees().get(124).getSubordinates().size());
-        assertEquals(0, hrApp.getEmployees().get(125).getSubordinates().size());
-        assertEquals(1, hrApp.getEmployees().get(300).getSubordinates().size());
-        assertEquals(0, hrApp.getEmployees().get(301).getSubordinates().size());
-        assertEquals(1, hrApp.getEmployees().get(305).getSubordinates().size());
-        assertEquals(1, hrApp.getEmployees().get(306).getSubordinates().size());
-        assertEquals(1, hrApp.getEmployees().get(307).getSubordinates().size());
-        assertEquals(0, hrApp.getEmployees().get(308).getSubordinates().size());
+        Map<Integer, Integer> expectedSubordinateCounts = Map.of(
+            123, 2,
+            124, 2,
+            125, 0,
+            300, 1,
+            301, 0,
+            305, 1,
+            306, 1,
+            307, 1,
+            308, 0
+        );
+
+        expectedSubordinateCounts.forEach((empId, expectedCount) -> 
+            assertEquals(expectedCount, hrApp.getEmployees().get(empId).getSubordinates().size())
+        );
     }
 
     @Test
     public void testCheckManagerSalaries() {
-        var deviations = hrApp.getDeviations();
-        assertEquals(4, deviations.size());
+        List<Deviation> expectedDeviations = List.of(
+            new Deviation(305, DeviationEnum.SALARY_TOO_LOW, 7999.5),
+            new Deviation(306, DeviationEnum.SALARY_TOO_HIGH, 5000.0),
+            new Deviation(124, DeviationEnum.SALARY_TOO_LOW, 6000.0),
+            new Deviation(308, DeviationEnum.SUBORDINATES_TOO_MANY, 1.0)
+        );
 
-        // with org.hamcrest could be better (assert that contains Object)
-        assertEquals(305, deviations.get(0).empId());
-        assertEquals(DeviationEnum.SALARY_TOO_LOW, deviations.get(0).deviationEnum());
-        assertEquals(7999.5, deviations.get(0).deviationValue());
+        List<Deviation> actualDeviations = hrApp.getDeviations();
+        assertEquals(expectedDeviations.size(), actualDeviations.size());
 
-        assertEquals(306, deviations.get(1).empId());
-        assertEquals(DeviationEnum.SALARY_TOO_HIGH, deviations.get(1).deviationEnum());
-        assertEquals(5000, deviations.get(1).deviationValue());
-
-        assertEquals(124, deviations.get(2).empId());
-        assertEquals(DeviationEnum.SALARY_TOO_LOW, deviations.get(2).deviationEnum());
-        assertEquals(6000, deviations.get(2).deviationValue());
-
-        assertEquals(308, deviations.get(3).empId());
-        assertEquals(DeviationEnum.SUBORDINATES_TOO_MANY, deviations.get(3).deviationEnum());
-        assertEquals(1, deviations.get(3).deviationValue());
+        for (int i = 0; i < expectedDeviations.size(); i++) {
+            assertEquals(expectedDeviations.get(i).empId(), actualDeviations.get(i).empId());
+            assertEquals(expectedDeviations.get(i).deviationEnum(), actualDeviations.get(i).deviationEnum());
+            assertEquals(expectedDeviations.get(i).deviationValue(), actualDeviations.get(i).deviationValue());
+        }
     }
-
-    // could be more tests (negative ones, but I would need more dependencies than just JUnit, Maven and pure Java)
 }
